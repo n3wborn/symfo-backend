@@ -1,0 +1,36 @@
+services:
+  webserver:
+    build: docker/nginx
+    image: nginx:alpine
+    restart: unless-stopped
+    expose:
+      - 80
+      - 443
+    networks:
+      - reverse_proxy
+      - symfo6-skel
+    volumes:
+      - ".:/app"
+
+  php-fpm:
+    build: docker/php-fpm
+    working_dir: /app
+    restart: unless-stopped
+    networks:
+      - symfo6-skel
+    volumes:
+      - ".:/app"
+      - "./docker/php-fpm/php-ini-overrides.ini:/etc/php/8.1/fpm/conf.d/99-overrides.ini"
+
+  postgres:
+    image: postgres:13-alpine
+    restart: unless-stopped
+    networks:
+      - symfo6-skel
+    environment:
+      POSTGRES_PASSWORD: password
+
+networks:
+  symfo6-skel:
+  reverse_proxy:
+    external: true
