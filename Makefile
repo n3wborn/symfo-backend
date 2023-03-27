@@ -26,6 +26,9 @@ init-back-deps:
 init-front-deps:
 	docker run --rm -u node -w /home/node/app -v $(PWD):/home/node/app $(NODE) $(NODE_PKG_MNGR) install
 
+.PHONY: install
+install: docker_build init-back-deps init-front-deps docker_up
+
 .PHONY: node_watch
 node_watch:
 	docker run --rm --name node_symfo6-skel -u node -w /home/node/app -v $(PWD):/home/node/app $(NODE) $(NODE_PKG_MNGR) watch
